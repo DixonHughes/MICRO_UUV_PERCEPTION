@@ -9,60 +9,60 @@ COMMON_SET_DEVICE_ID = 100
 # variable length fields are formatted with 's', and always occur at the end of the payload
 # the format string for these messages is adjusted at runtime, and 's' inserted appropriately at runtime
 # see PingMessage.get_payload_format()
-payload_dict_common = {
-    COMMON_ACK: {
-        "name": "ack",
-        "format": "H",
-        "field_names": (
-             "acked_id",
+payload_dict_common = {            #assigning variables to the common dictionary
+    COMMON_ACK: {                  #assigning the variables in Common ACK
+        "name": "ack",             #"Name" = "ack"
+        "format": "H",             #"format" = "H"
+        "field_names": (           #"field_names" = ("acked_id", )
+             "acked_id",   
             ),
-        "payload_length": 2
-    },
+        "payload_length": 2        #"Payload_length" =  2
+    },                             #end of Common_Ack Function
 
-    COMMON_NACK: {
-        "name": "nack",
-        "format": "H",
-        "field_names": (
+    COMMON_NACK: {                #Establish Common_Nack Function
+        "name": "nack",           #"name" = "nack"
+        "format": "H",            #"Formant" = "H"
+        "field_names": (          #"fieldnames" = ("nacked_id", "nack_message", ) 
              "nacked_id",
              "nack_message",
             ),
-        "payload_length": 2
-    },
+        "payload_length": 2       #"payload_length" = 2
+    },                            #End defining function Common_Nack
 
-    COMMON_ASCII_TEXT: {
-        "name": "ascii_text",
-        "format": "",
-        "field_names": (
+    COMMON_ASCII_TEXT: {          #Defining function Common_ASCII_Text
+        "name": "ascii_text",     #"Name" = "ascii_text"
+        "format": "",             #"format" = ""
+        "field_names": (          #"fieldnames" = ("ascii_message", )
              "ascii_message",
             ),
-        "payload_length": 0
-    },
+        "payload_length": 0       #"payload_length" = 0
+    },                            #End defining function COMMON_ASCII_TEXT
 
-    COMMON_GENERAL_REQUEST: {
-        "name": "general_request",
-        "format": "H",
-        "field_names": (
+    COMMON_GENERAL_REQUEST: {            #Define function COMMON_GENERAL_REQUESTS:
+        "name": "general_request",       #"name" = "general_requests"
+        "format": "H",                   # "format" = "H" 
+        "field_names": (                 #"field_names" = ("requested_id",)
              "requested_id",
             ),
-        "payload_length": 2
-    },
+        "payload_length": 2              #"payload_length" = 2
+    },                                   #End defining function COMMON_GENERAL_REQUEST
 
-    COMMON_DEVICE_INFORMATION: {
-        "name": "device_information",
-        "format": "BBBBBB",
-        "field_names": (
-             "device_type",
+    COMMON_DEVICE_INFORMATION: {         # define function COMMON_DEVICE_INFORMATION
+        "name": "device_information",    #"name" = "device_information"
+        "format": "BBBBBB",              #"format" = "BBBBBB"
+        "field_names": (                 #"field_names"  ("device_type", "device_revision","firmware_version_major","firmware_version_minor","firmware_version_patch","reserved",)
+             "device_type",              
              "device_revision",
              "firmware_version_major",
              "firmware_version_minor",
              "firmware_version_patch",
              "reserved",
             ),
-        "payload_length": 6
-    },
+        "payload_length": 6              #"payload_lengt" = 6
+    },                                   #End defining function COMMON_DEVICE_INFORMATION
 
-    COMMON_PROTOCOL_VERSION: {
-        "name": "protocol_version",
+    COMMON_PROTOCOL_VERSION: {           #DEFINE function COMMON_PROTOCOL_VERSION
+        "name": "protocol_version",      
         "format": "BBBB",
         "field_names": (
              "version_major",
@@ -73,7 +73,7 @@ payload_dict_common = {
         "payload_length": 4
     },
 
-    COMMON_SET_DEVICE_ID: {
+    COMMON_SET_DEVICE_ID: {              #define function COMMON_SET_DEVICE_ID
         "name": "set_device_id",
         "format": "B",
         "field_names": (
