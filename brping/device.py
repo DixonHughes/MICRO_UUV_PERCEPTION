@@ -8,16 +8,19 @@
 # DO NOT EDIT
 # ~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!
 
-from brping import definitions
-from brping import pingmessage
-from collections import deque
-import serial
-import socket
+from brping import definitions        #from brping module, import definitions method
+from brping import pingmessage        #from brping module, import pingmessages method
+from collections import deque   #This module implements specialized container datatypes providing alternatives to Python’s general purpose built-in containers, dict, list, set, and tuple.
+                                # #deque = list-like container with fast appends and pops on either end
+
+import serial                       
+
+import socket                    #opens BSD Sockets
 import time
 
-class PingDevice(object):
+class PingDevice(object):                                         #Defined PingDevice class with parameter = object
 
-    _input_buffer = deque()
+    _input_buffer = deque()                                        
     def __init__(self):
         ## A helper class to take care of decoding the input stream
         self.parser = pingmessage.PingParser()
@@ -35,7 +38,7 @@ class PingDevice(object):
     # @param device_name: Serial device name. E.g: /dev/ttyUSB0 or COM5
     # @param baudrate: Connection baudrate used in the serial communication
     #
-    def connect_serial(self, device_name: str, baudrate: int =115200):
+    def connect_serial(self, device_name: str, baudrate: int =115200):            #sets the baudrate =115200
         if device_name is None:
             print("Device name is required")
             return
