@@ -3,40 +3,40 @@
 # PingMessage.py
 # Python implementation of the Blue Robotics 'Ping' binary message protocol
 
-import struct
-from brping import definitions
-payload_dict = definitions.payload_dict_all
-asciiMsgs = [definitions.COMMON_NACK, definitions.COMMON_ASCII_TEXT]
+import struct                                                                                             # struct library converts between Python values and C structs represeted as Python bytes.
+from brping import definitions                                                                            #from brping class import definitinos method
+payload_dict = definitions.payload_dict_all                                                               #payload_dict = payload_dict_all () from the definitinos method
+asciiMsgs = [definitions.COMMON_NACK, definitions.COMMON_ASCII_TEXT]                                      #data pulled from deifinitions method
 variable_msgs = [definitions.PING1D_PROFILE, definitions.PING360_DEVICE_DATA, ]
 
 
-class PingMessage(object):
+class PingMessage(object):                                                                               #Start of new class PingMessage(object)
     ## header start byte 1
-    start_1 = ord("B")
+    start_1 = ord("B")                                                                                   #ord("") returns the Unicode code from a given character, it will be the decimal valuee ex. ord("B") = 66 
 
     ## header start byte 2
-    start_2 = ord("R")
+    start_2 = ord("R")                                                                                   # start_2 = 82
 
     ## header struct format
-    header_format = "BBHHBB"
+    header_format = "BBHHBB"                                                                            #formats header
 
     ## checksum struct format
     checksum_format = "H"
 
     ## data endianness for struct formatting
-    endianess = "<"
+    endianess = "<"                                                                                    # etablishes little endian byte storage?
 
-    ## names of the header fields
+    ## names of the header fields                                                                       #defines header_field_names = ("start_1","start_2","payload_length","message_id","src_device_id","dst_device_id")
     header_field_names = (
         "start_1",
         "start_2",
-        "payload_length",
+        "payload_length",                                                                             #payload_length values defined in brping.definitinos
         "message_id",
         "src_device_id",
         "dst_device_id")
 
     ## number of bytes in a header
-    headerLength = 8
+    headerLength = 8     
 
     ## number of bytes in a checksum
     checksumLength = 2
@@ -67,9 +67,9 @@ class PingMessage(object):
     #     start_mm = m.start_mm
     #     length_mm = m.length_mm
     # @endcode
-    def __init__(self, msg_id=0, msg_data=None):
+    def __init__(self, msg_id=0, msg_data=None):                            #constructor definiion
         ## The message id
-        self.message_id = msg_id
+        self.message_id = msg_id                                            #establish message id
 
         ## The request id for request messages
         self.request_id = None
@@ -83,32 +83,32 @@ class PingMessage(object):
 
         ## The raw data buffer for this message
         # update with pack_msg_data()
-        self.msg_data = None
+        self.msg_data = None                                    #raw data buffer for this message
 
         # Constructor 1: make a pingmessage object from a binary data buffer
         # (for receiving + unpacking)
-        if msg_data is not None:
-            if not self.unpack_msg_data(msg_data):
+        if msg_data is not None:                                                   # lines 90-93 is a conditional check to see if the code has a value in it or not, it then unpacks said value and checks if the code  has any data
+            if not self.unpack_msg_data(msg_data):                                 # if not is a handshake to chekc if the statment returns false, the next lines will be executed in this case return
                 # Attempted to create an unknown message
                 return
         # Constructor 2: make a pingmessage object cooresponding to a message
         # id, with field members ready to access and populate
         # (for packing + transmitting)
-        else:
+        else:                                                                      # if msg_data has nothing in it it then runs lines 98-123 to initialize absent variables, vectors 
 
             try:
                 ## The name of this message
-                self.name = payload_dict[self.message_id]["name"]
+                self.name = payload_dict[self.message_id]["name"]                 #constructor name = payload_dict ( self,messafe_id, name
 
                 ## The field names of this message
-                self.payload_field_names = payload_dict[self.message_id]["field_names"]
+                self.payload_field_names = payload_dict[self.message_id]["field_names"]    #like 101 using the payload_dict from line 8
 
-                # initialize payload field members
+                # initialize payload field members                                 #sets all attributes in self.payload_field_names to zero
                 for attr in self.payload_field_names:
                     setattr(self, attr, 0)
 
                 # initialize vector fields
-                if self.message_id in variable_msgs:
+                if self.message_id in variable_msgs:                            
                     setattr(self, self.payload_field_names[-1], bytearray())
 
                 ## Number of bytes in the message payload
@@ -160,7 +160,7 @@ class PingMessage(object):
         # Extract header
         header = struct.unpack(PingMessage.endianess + PingMessage.header_format, self.msg_data[0:PingMessage.headerLength])
 
-        for i, attr in enumerate(PingMessage.header_field_names):
+        for i, attr in enumerate(PingMessage.header_field_names):                #The enumerate() function takes a collection (e.g. a tuple) and returns it as an enumerate object.
             setattr(self, attr, header[i])
 
         ## The name of this message
@@ -195,7 +195,7 @@ class PingMessage(object):
                             setattr(self, attr, bytearray())
                             pass
 
-        # Extract checksum
+        # Extract checksum   #checksum is a error detection method where both the sender and receiver add to zero 
         self.checksum = struct.unpack(PingMessage.endianess + PingMessage.checksum_format, self.msg_data[PingMessage.headerLength + self.payload_length: PingMessage.headerLength + self.payload_length + PingMessage.checksumLength])[0]
         return True
 
@@ -271,7 +271,7 @@ class PingMessage(object):
             "Checksum: " + str(self.checksum) + " check: " + str(self.calculate_checksum()) + " pass: " + str(self.verify_checksum())
         )
 
-        return representation
+        return representation                #shows the representation of what is going on in the script
 
 
 # A class to digest a serial stream and decode PingMessages
@@ -301,7 +301,7 @@ class PingParser(object):
     WAIT_CHECKSUM_H   = 11   # Waiting for the checksum high byte
     ERROR             = 12   # Checksum didn't check out
 
-    def __init__(self):
+    def __init__(self):            #new constructor definitions with no parameters
         self.buf = bytearray()
         self.state = self.WAIT_START
         self.payload_length = 0 # remaining for the message currently being parsed
@@ -343,11 +343,11 @@ class PingParser(object):
         self.buf.append(msg_byte)
         self.state += 1
 
-    def wait_src_id(self, msg_byte):
+    def wait_src_id(self, msg_byte):            #wait definitions for message id source
         self.buf.append(msg_byte)
         self.state += 1
 
-    def wait_dst_id(self, msg_byte):
+    def wait_dst_id(self, msg_byte):            #wait definition for message ID destination
         self.buf.append(msg_byte)
         self.state += 1
         if self.payload_length == 0: # no payload bytes -> skip waiting
