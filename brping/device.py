@@ -63,7 +63,7 @@ class PingDevice(object):                                         #Defined PingD
     # @param host: UDP server address (IPV4) or name
     # @param port: port used to connect with server
     #
-    def connect_udp(self, host: str = None, port: int = 12345):
+    def connect_udp(self, host: str = None, port: int = 12345):      #define UDP connection with parameters: host(string), port(integer)
         if host is None:
             host = '0.0.0.0' # Connect to local host
 
