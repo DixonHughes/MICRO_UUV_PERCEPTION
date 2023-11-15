@@ -8,18 +8,18 @@
 # DO NOT EDIT
 # ~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!~!
 
-from brping import definitions
-from brping import PingDevice
-from brping import pingmessage
-import time
+from brping import definitions        #imports definitions class from brping module
+from brping import PingDevice         #imports PingDevice class from brping module
+from brping import pingmessage        #imports pingmessage class from brping module
+import time                           #impors time module 
 
-class Ping360(PingDevice):
+class Ping360(PingDevice):            #define Ping360 class(the sensor) with the parameter (PingDevice)
     def initialize(self):
-        if not PingDevice.initialize(self):
+        if not PingDevice.initialize(self):                #return error if not initialized
+            return False                                    
+        if (self.readDeviceInformation() is None):         #if device info is vacant return error
             return False
-        if (self.readDeviceInformation() is None):
-            return False
-        return True
+        return True                                        #If initialize return true
 
     ##
     # @brief Get a auto_device_data message from the device\n
@@ -27,6 +27,8 @@ class Ping360(PingDevice):
     # Extended version of *device_data* with *auto_transmit* information. The sensor emits this message when in *auto_transmit* mode.
     #
     # @return None if there is no reply from the device, otherwise a dictionary with the following keys:\n
+    
+                                #Importand Parameters and their Definitions 
     # mode: Operating mode (1 for Ping360)\n
     # gain_setting: Analog gain setting (0 = low, 1 = normal, 2 = high)\n
     # angle: Units: gradian; Head angle\n
@@ -39,10 +41,10 @@ class Ping360(PingDevice):
     # delay: Units: millisecond; An additional delay between successive transmit pulses (0~100 ms). This may be necessary for some programs to avoid collisions on the RS485 USRT.\n
     # number_of_samples: Number of samples per reflected signal\n
     # data: 8 bit binary data array representing sonar echo strength\n
-    def get_auto_device_data(self):
-        if self.request(definitions.PING360_AUTO_DEVICE_DATA) is None:
+    def get_auto_device_data(self):                                        #definition to automatically retreive data
+        if self.request(definitions.PING360_AUTO_DEVICE_DATA) is None:      #if the Ping360 data is not available, throw an error
             return None
-        data = ({
+        data = ({                                                           #if it is, define other necessary variables
             "mode": self._mode,  # Operating mode (1 for Ping360)
             "gain_setting": self._gain_setting,  # Analog gain setting (0 = low, 1 = normal, 2 = high)
             "angle": self._angle,  # Units: gradian; Head angle
@@ -97,7 +99,7 @@ class Ping360(PingDevice):
     # @param reserved - reserved
     #
     # @return If verify is False, True on successful communication with the device. If verify is False, True if the new device parameters are verified to have been written correctly. False otherwise (failure to read values back or on verification failure)
-    def device_id(self, id, reserved, verify=True):
+    def device_id(self, id, reserved, verify=True):                    #define device_id with the parameters: self, id, reserved, verify=True
         m = pingmessage.PingMessage(definitions.PING360_DEVICE_ID)
         m.id = id
         m.reserved = reserved
@@ -116,7 +118,7 @@ class Ping360(PingDevice):
 
 
     def control_auto_transmit(self, mode, gain_setting, transmit_duration, sample_period, transmit_frequency, number_of_samples, start_angle, stop_angle, num_steps, delay):
-        m = pingmessage.PingMessage(definitions.PING360_AUTO_TRANSMIT)
+        m = pingmessage.PingMessage(definitions.PING360_AUTO_TRANSMIT)        #m = in pingmessage class, the function PingMessage which defines the bit transmission of the data from definitinos.PING3060_AUTO_Transmit
         m.mode = mode
         m.gain_setting = gain_setting
         m.transmit_duration = transmit_duration
@@ -130,7 +132,7 @@ class Ping360(PingDevice):
         m.pack_msg_data()
         self.write(m.msg_data)
 
-    def control_motor_off(self):
+    def control_motor_off(self):                                            #Defines the function control_motor_off wich uses the data from deinitions.PING360_MOTOR_OFF
         m = pingmessage.PingMessage(definitions.PING360_MOTOR_OFF)
         m.pack_msg_data()
         self.write(m.msg_data)
