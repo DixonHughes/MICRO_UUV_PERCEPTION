@@ -286,22 +286,22 @@ if __name__ == "__main__":
     parser.add_argument('--baudrate', action="store", type=int, default=115200, help="Ping device baudrate. E.g: 115200")
     parser.add_argument('--udp', action="store", required=False, type=str, help="Ping UDP server. E.g: 192.168.2.2:9092")
     args = parser.parse_args()
-    if args.device is None and args.udp is None:
+    if args.device is None and args.udp is None:                #throws error if device arguments and UDP is not available
         parser.print_help()
         exit(1)
 
-    p = Ping360()
-    if args.device is not None:
+    p = Ping360()                                                #establishes ping3- as a variable for manipulation
+    if args.device is not None:                                   #if arg.device has data, connect via serial and baudrate
         p.connect_serial(args.device, args.baudrate)
-    elif args.udp is not None:
-        (host, port) = args.udp.split(':')
-        p.connect_udp(host, int(port))
+    elif args.udp is not None:                                    #if there is udp data, connect to VIA ether net using host server and port 
+        (host, port) = args.udp.split(':')                        #split UDP with : delimeter
+        p.connect_udp(host, int(port))                            #connect ping360 to UDP 
 
-    print("Initialized: %s" % p.initialize())
+    print("Initialized: %s" % p.initialize())            ##prints p.initalize info
 
-    print(p.set_transmit_frequency(800))
-    print(p.set_sample_period(80))
-    print(p.set_number_of_samples(200))
+    print(p.set_transmit_frequency(800))                 #prints the ping360 transmit frequency(800hz)
+    print(p.set_sample_period(80))                       #prints the ping360 sample period(80ns)
+    print(p.set_number_of_samples(200))                  # prints the set numbet of samples form ping360(80)
 
     tstart_s = time.time()
     for x in range(400):
