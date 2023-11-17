@@ -1,15 +1,10 @@
-import time
+import time                 
 import argparse
-
 from brping import Ping360
-import time
-import argparse
-
 from builtins import input
+import numpy as np 
 
 if __name__ == "__main__":
-    import argparse
-
     parser = argparse.ArgumentParser(description="Ping python library example.")
     parser.add_argument('--device', action="store", required=False, type=str, help="Ping device port. E.g: /dev/ttyUSB0")
     parser.add_argument('--baudrate', action="store", type=int, default=115200, help="Ping device baudrate. E.g: 115200")
@@ -33,11 +28,17 @@ if __name__ == "__main__":
     print(p.set_number_of_samples(200))
 
     tstart_s = time.time()
-    for x in range(400):
+    for x in range(400):            #In Gradians, 100 = 90 degrees, so 360 deg
         p.transmitAngle(x)
+        vals = bytearray(p._data) # convert the ping data to a byte array
+        vals_8bit = np.array(vals).astype(np.uint8)
+        print(vals_8bit)
+        print("----------------------------------------------------------")
     tend_s = time.time()
 
     vals = bytearray(p._data) # convert the ping data to a byte array
+    vals_8bit = np.array(vals).astype(np.uint8)
+    print(vals_8bit)
     for index in vals:
         print((index+1)*5/200.) # converts index to range?
 
