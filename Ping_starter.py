@@ -4,6 +4,11 @@ from brping import Ping360
 from builtins import input
 import numpy as np 
 
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+from matplotlib.colors import Normalize
+from matplotlib.text import TextPath
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Ping python library example.")
     parser.add_argument('--device', action="store", required=False, type=str, help="Ping device port. E.g: /dev/ttyUSB0")
@@ -32,8 +37,9 @@ if __name__ == "__main__":
         p.transmitAngle(x)
         vals = bytearray(p._data) # convert the ping data to a byte array
         vals_8bit = np.array(vals).astype(np.uint8)
-        print(vals_8bit)
-        print("----------------------------------------------------------")
+        np.save("/home/wrc/Desktop/Github/MICRO_UUV_PERCEPTION/data/"+str(x)+".npy", vals_8bit)
+        #print("----------------------------------------------------------")
+    
     tend_s = time.time()
 
     vals = bytearray(p._data) # convert the ping data to a byte array
