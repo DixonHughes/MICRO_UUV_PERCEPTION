@@ -5,23 +5,15 @@ import matplotlib as mpl
 from matplotlib.colors import Normalize
 from matplotlib.text import TextPath
 
-color = []                                 #this for loop creates a list from the txt file
-for line in open("test_1.txt"):
-    nums = line.split()
-    nums = map(int, nums)
 
-    color.extend(nums)
-
-#Ecolor = int(color())
-print(type(color[0]))
-angle = np.arange(200)                  #this is the angle in gradians per sonar ping, 400 gradians andd only 1216 returns
-y = range(0,200,1)
-
-fig, ax = plt.subplots()
-cmap = plt.colormaps["viridis"]
-plt.scatter(angle , y, c = color)
-fig.suptitle("Sonar Intensity Returns", size = 13) 
-ax.set_xlabel("Sonar Angle (gradians)")
-ax.set_ylabel("Sonar Range (element-wise)")
-plt.colorbar()
+for x in range(400):
+    gradian = np.load("/home/wrc/Desktop/Github/MICRO_UUV_PERCEPTION/data/"+str(x)+".npy")
+    #print(gradian)
+    x_axis = np.ones(200)*x
+    y_axis = np.arange(0,200)
+    print(y_axis)
+    plt.scatter(x_axis, y_axis, c = gradian )
 plt.show()
+
+
+
