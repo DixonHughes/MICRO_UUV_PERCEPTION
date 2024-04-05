@@ -9,6 +9,13 @@ import matplotlib as mpl
 from matplotlib.colors import Normalize
 from matplotlib.text import TextPath
 
+import cv2
+
+
+def calulate_sample_period(range):
+    sample_period = 2.0 * range / (1200 * 1481 * 0.000000025)
+    return int(sample_period)
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Ping python library example.")
     parser.add_argument('--device', action="store", required=False, type=str, help="Ping device port. E.g: /dev/ttyUSB0")
@@ -28,17 +35,38 @@ if __name__ == "__main__":
 
     print("Initialized: %s" % p.initialize())
 
+    # get the new range
+    new_sample_period = calulate_sample_period(1.5)
+
     print(p.set_transmit_frequency(800))
     print(p.set_sample_period(80))
-    print(p.set_number_of_samples(200))
+    print(p.set_number_of_samples(1200))
+    print(p.set_sample_period(new_sample_period))
 
+
+    # make sure to rurnt the following command
+    # export QT_QPA_PLATFORM=xcb
+    img = np.zeros((400,1200,3), dtype = np.uint8) 
+    gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  #convert to grayscale
     tstart_s = time.time()
-    for x in range(400):            #In Gradians, 100 = 90 degrees, so 360 deg
-        p.transmitAngle(x)
-        vals = bytearray(p._data) # convert the ping data to a byte array
-        vals_8bit = np.array(vals).astype(np.uint8)
-        np.save("/home/wrc/Desktop/Github/MICRO_UUV_PERCEPTION/data/"+str(x)+".npy", vals_8bit)
-        #print("----------------------------------------------------------")
+    #output list to save each full scan
+    
+    sweeps = 5
+
+   # while(True):
+    for s in range(sweeps):
+        for i in range(300,100,-1):            #In Gradians, 100 = 90 degrees, so 360 deg
+            p.transmitAngle(i)          #takes sonar ping at that gradian
+            vals = bytearray(p._data) # convert the ping data to a byte array
+            vals_8bit = np.array(vals).astype(np.uint8)
+            np.save("/home/wrc/Desktop/Github/MICRO_UUV_PERCEPTION/data/"+str(s)+"_"+str(i)+".npy" ,vals_8bit)
+            # #print("----------------------------------------------------------")
+            gray_image[i] = vals_8bit               #updates that row from gray_image with the ping values
+            cv2. imshow('Sonar IMG',gray_image)     #displays the new img
+            cv2.waitKey(1)                       #keeps the image open for 2 seconds or until a key is pressed
+             
+
+            
     
     tend_s = time.time()
 
